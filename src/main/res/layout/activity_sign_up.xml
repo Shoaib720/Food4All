@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignUp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Email Registration"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:background="@drawable/rectangle"
+        />
+
+    <EditText
+        android:id="@+id/et_signup_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/splashForeground"
+        android:textSize="@dimen/fontSizeNormal"/>
+
+    <EditText
+        android:id="@+id/et_signup_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:inputType="textPassword"
+        android:textColor="@color/splashForeground"
+        android:textSize="@dimen/fontSizeNormal"/>
+
+    <EditText
+        android:id="@+id/et_signup_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:inputType="textPassword"
+        android:textColor="@color/splashForeground"
+        android:textSize="@dimen/fontSizeNormal"/>
+
+    <Button
+        android:id="@+id/btn_signup_signup"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="Register"
+        android:textSize="@dimen/fontSizeNormal"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/rectangle"
+        android:textColor="#ffffff"
+        />
+
+    <TextView
+        android:id="@+id/tv_signup_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already a user? Sign in"
+        android:textSize="@dimen/fontSizeNormal"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        />
+
+        <Button
+            android:id="@+id/btn_resend_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resend verification email!"
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/rectangle"
+            android:textColor="#ffffff"
+            />
+
+
+
+</LinearLayout>
