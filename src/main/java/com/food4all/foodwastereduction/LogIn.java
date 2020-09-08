@@ -47,6 +47,7 @@ public class LogIn extends AppCompatActivity {
 
     // Declare Authentication variable
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String TAG = LogIn.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,7 +311,7 @@ public class LogIn extends AppCompatActivity {
                                         // Signin failed
                                         // Taost user about the same
                                         // Update the UI accordingly
-                                        Log.w("Failure", "signInWithEmail:failure", task.getException());
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
                                         Toast.makeText(LogIn.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                         updateUI(null);
@@ -347,30 +348,36 @@ public class LogIn extends AppCompatActivity {
     // =================================================Experiment===================================================
 
     private void loginOnlyIfEmailVerifiedAndUserDataExists(FirebaseUser user) {
-        final String email = user.getEmail().split("@")[0];
 
-        FirebaseFirestore rootnode = FirebaseFirestore.getInstance();
-        CollectionReference usersNode = rootnode.collection("users");
-        Query query = usersNode.whereEqualTo("email", user.getEmail());
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+        if (user.getEmail() != null){
+            final String email = user.getEmail().split("@")[0];
+
+            FirebaseFirestore rootnode = FirebaseFirestore.getInstance();
+            CollectionReference usersNode = rootnode.collection("users");
+            Query query = usersNode.whereEqualTo("email", user.getEmail());
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
 //                        System.out.println(document.getId());
 //                        System.out.println(document.getData());
-                        if (document.exists()){
-                            Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
-                            startActivity(loginIntent);
-                        }
-                        else {
-                            Toast.makeText(LogIn.this, "User doesnt exist!!",
-                            Toast.LENGTH_SHORT).show();
+                            if (document.exists()){
+                                Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
+                                startActivity(loginIntent);
+                            }
+                            else {
+                                Toast.makeText(LogIn.this, "User doesnt exist!!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }else {
+            Log.d(TAG, "User email is returned null!!!");
+        }
+
 //        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
 //        dbRef.orderByChild("email").equalTo(email)
 //        .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -456,8 +463,77 @@ public class LogIn extends AppCompatActivity {
                     else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
                         builder.setTitle("Email not verified!!")
-                                .setMessage("If you are a new user please sign up. If not then please verify your email from Signup section! If you have already verified then please wait and try again after sometime!")
+                                .setMessage("If you are a new user please sign up. If not then please verify your email from Signup section! If you have already verified then please wait and try again after sometime or resend the verification mail")
                                 .setCancelable(false)
+                                .setPositiveButton("Resend", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        final FirebaseUser user = mAuth.getCurrentUser();
+
+                                        // If user not null then send the verification email
+                                        // It simply means that the user is logged in
+                                        if (user != null){
+                                            user.sendEmailVerification()
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+
+                                                            // Email sent successfully to the user
+                                                            // Toast the user about the same
+                                                            Toast.makeText(LogIn.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+
+                                                            // Email wasn't sent to the user
+                                                            // Log the error
+                                                            Log.d(TAG, "Email not sent: " + e.getMessage());
+
+                                                            // Delete the user created by the Firebase
+                                                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+
+                                                                    // If user deleted successfully
+                                                                    // Toast the user to retry signup
+                                                                    if (task.isComplete()){
+                                                                        Toast.makeText(LogIn.this, "Email not sent please retry signup!",
+                                                                                Toast.LENGTH_LONG).show();
+                                                                    }
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+
+                                                                    // If user deletion failed
+                                                                    // Show the user alert dialog
+                                                                    // that his/her email is not verified
+                                                                    // resend the verification link
+                                                                    AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
+                                                                    builder.setTitle("Email issue!")
+                                                                            .setMessage("Dear user, your email is not verified! If you didn't received our mail, then please click on resend mail button!")
+                                                                            .setCancelable(false)
+                                                                            .setPositiveButton("Ok", null);
+                                                                    AlertDialog dialog = builder.create();
+                                                                    dialog.show();
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                        }else {
+
+                                            // User is null
+                                            // It means an existing user / new user is attempting to resend mail
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
+                                            builder.setMessage("Hey there! You need to Signup first!")
+                                                    .setPositiveButton("Ok", null);
+                                            AlertDialog dialog = builder.create();
+                                            dialog.show();
+                                        }
+                                    }
+                                })
                                 .setPositiveButton("Signup", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
