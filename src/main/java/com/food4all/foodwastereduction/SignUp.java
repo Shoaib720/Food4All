@@ -213,6 +213,8 @@ public class SignUp extends AppCompatActivity {
         final String _about = getIntent().getStringExtra("about");
         final String _dob = getIntent().getStringExtra("dob");
         final String _gender = getIntent().getStringExtra("gender");
+        final String _userType = getIntent().getStringExtra("userType");
+        final String _district = getIntent().getStringExtra("district");
         final String child = email.split("@")[0];
 //        String _emailSecondPart = _emailParts[1].split(".")[0];
 //        final String child = _emailParts[0] + _emailSecondPart;
@@ -228,26 +230,27 @@ public class SignUp extends AppCompatActivity {
                         if (task.isSuccessful()){
                             Log.d("Success", "createUserWithEmail:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
-                            user.sendEmailVerification()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            UserHelper newUser = new UserHelper(_name, _contact, email, _about, _dob, _gender);
-                                            db.collection("users")
-                                                    .add(newUser)
-                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                        @Override
-                                                        public void onSuccess(DocumentReference documentReference) {
-                                                            Toast.makeText(SignUp.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
-                                                            updateUI(user);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Log.d("onFailure","Data not added: " + e.getMessage());
-                                                        }
-                                                    });
+                            if (user != null){
+                                user.sendEmailVerification()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                UserHelper newUser = new UserHelper(_name, _contact, email, _about, _dob, _gender, _district, _userType);
+                                                db.collection("users")
+                                                        .add(newUser)
+                                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentReference documentReference) {
+                                                                Toast.makeText(SignUp.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
+                                                                updateUI(user);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.d("onFailure","Data not added: " + e.getMessage());
+                                                            }
+                                                        });
 //                                            dbRef.child(child).setValue(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
 //                                                @Override
 //                                                public void onSuccess(Void aVoid) {
@@ -262,15 +265,17 @@ public class SignUp extends AppCompatActivity {
 //                                            });
 //                                            Toast.makeText(SignUp.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
 //                                            updateUI(user);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d("onFailure","Email not sent: " + e.getMessage());
-                                            updateUI(null);
-                                        }
-                                    });
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d("onFailure","Email not sent: " + e.getMessage());
+                                                updateUI(null);
+                                            }
+                                        });
+                            }
+
 
                         }
                         else {
@@ -327,16 +332,19 @@ public class SignUp extends AppCompatActivity {
         }
         else {
             FirebaseUser user = mAuth.getCurrentUser();
-            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isComplete()){
-                        Toast.makeText(SignUp.this, "Email not sent please retry signup!",
-                                Toast.LENGTH_LONG).show();
+            if (user != null){
+                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()){
+                            Toast.makeText(SignUp.this, "Email not sent please retry signup!",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            });
-            clearInputs();
+                });
+                clearInputs();
+            }
+
         }
     }
 

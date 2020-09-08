@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".CompleteUserProfile">
+    android:scrollbars="vertical"
+    android:fillViewport="false">
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".CompleteUserProfile">
 
 
     <TextView
@@ -23,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter name"
+        android:inputType="text"
         android:textSize="@dimen/fontSizeNormal"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
@@ -36,6 +44,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter Date of Birth"
         android:textSize="@dimen/fontSizeNormal"
+        android:inputType="text"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -58,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             >
 
             <RadioButton
@@ -80,6 +89,45 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User type"
+            android:textSize="@dimen/fontSizeNormal"
+            android:layout_margin="20dp"/>
+
+        <RadioGroup
+            android:id="@+id/rg_user_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_donor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donor"
+                android:checked="true"
+                android:textSize="@dimen/fontSizeNormal"/>
+
+            <RadioButton
+                android:id="@+id/rb_beneficiary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Beneficiary"
+                android:textSize="@dimen/fontSizeNormal"
+                />
+        </RadioGroup>
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/et_profile_contact"
         android:layout_width="match_parent"
@@ -88,6 +136,21 @@
         android:textSize="@dimen/fontSizeNormal"
         android:inputType="phone"
         android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select district"
+        android:textSize="@dimen/fontSizeNormal"
+        android:layout_margin="20dp"/>
+
+
+    <Spinner
+        android:id="@+id/spinner_district"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
@@ -103,6 +166,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontSizeNormal"
+        android:inputType="text"
         android:layout_marginTop="-10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -122,3 +186,5 @@
         />
 
 </LinearLayout>
+
+</ScrollView>

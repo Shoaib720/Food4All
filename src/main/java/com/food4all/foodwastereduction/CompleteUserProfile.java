@@ -3,17 +3,21 @@ package com.food4all.foodwastereduction;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,9 +33,10 @@ import java.util.Objects;
 public class CompleteUserProfile extends AppCompatActivity {
 
     EditText etDob, etName, etContact, etAbout;
-    RadioGroup rg;
-    RadioButton rbselected;
+    RadioGroup rgGender, rgUserType;
+    RadioButton rbGenderSelected, rbUserTypeSelected;
     Button btnSubmit;
+    Spinner spinnerDistrict;
     DatePickerDialog.OnDateSetListener mDateSetListener;
 
     FirebaseAuth mAuth;
@@ -44,6 +49,7 @@ public class CompleteUserProfile extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         fUser = mAuth.getCurrentUser();
+        final String[] _selectedDistrict = new String[1];
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users");
 
 
@@ -52,23 +58,83 @@ public class CompleteUserProfile extends AppCompatActivity {
         etContact = (EditText) findViewById(R.id.et_profile_contact);
         etAbout = (EditText) findViewById(R.id.et_profile_about);
         etDob = (EditText) findViewById(R.id.et_dob);
-        rg = (RadioGroup) findViewById(R.id.rg_gender);
+        rgGender = (RadioGroup) findViewById(R.id.rg_gender);
+        rgUserType = (RadioGroup) findViewById(R.id.rg_user_type);
+        spinnerDistrict = (Spinner) findViewById(R.id.spinner_district);
+
+        final String[] district = {
+                "Ahmadnagar",
+                "Akola",
+                "Amravati",
+                "Aurangabad",
+                "Bhandara",
+                "Beed",
+                "Buldhana",
+                "Chandrapur",
+                "Dhule",
+                "Gadchiroli",
+                "Gondiya",
+                "Hingoli",
+                "Jalgaon",
+                "Jalna",
+                "Kolhapur",
+                "Latur",
+                "Mumbai",
+                "Mumbai Suburban",
+                "Nagpur",
+                "Nanded",
+                "Nandurbar",
+                "Nashik",
+                "Osmanabad",
+                "Parbhani",
+                "Pune",
+                "Raigad",
+                "Sangli",
+                "Satara",
+                "Sindhudurg",
+                "Solapur",
+                "Thane",
+                "Wardha",
+                "Washim",
+                "Yavatmal"
+        };
 
 
         btnSubmit = (Button) findViewById(R.id.btn_profile_submit);
 
 
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CompleteUserProfile.this, android.R.layout.simple_spinner_item, district);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDistrict.setAdapter(arrayAdapter);
+        spinnerDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                _selectedDistrict[0] = adapterView.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                _selectedDistrict[0] = null;
+            }
+        });
+
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer rbSelectedId = rg.getCheckedRadioButtonId();
-                rbselected = (RadioButton) findViewById(rbSelectedId);
+                Integer rbGenderSelectedId = rgGender.getCheckedRadioButtonId();
+                rbGenderSelected = (RadioButton) findViewById(rbGenderSelectedId);
+
+                Integer rbUserTypeSelectedId = rgUserType.getCheckedRadioButtonId();
+                rbUserTypeSelected = (RadioButton) findViewById(rbUserTypeSelectedId);
 
                 String _name = etName.getText().toString();
                 String _contact = etContact.getText().toString();
                 String _about = etAbout.getText().toString();
                 String _dob = etDob.getText().toString();
-                String _gender = rbselected.getText().toString();
+                String _gender = rbGenderSelected.getText().toString();
+                String _userType = rbUserTypeSelected.getText().toString();
 //                String _email = fUser.getEmail();
 //                String _emailParts[] = _email.split("@");
 //                String _emailSecondPart = _emailParts[1].split(".")[0];
@@ -76,13 +142,29 @@ public class CompleteUserProfile extends AppCompatActivity {
 
                 // =====================================Experiment===============================================
 
-                Intent intent = new Intent(CompleteUserProfile.this, SignUp.class);
-                intent.putExtra("name", _name);
-                intent.putExtra("contact", _contact);
-                intent.putExtra("about", _about);
-                intent.putExtra("gender", _gender);
-                intent.putExtra("dob", _dob);
-                startActivity(intent);
+                Boolean areInputsValid = checkInputValidity(_name, _contact, _about, _dob, _gender, _userType, _selectedDistrict[0]);
+
+                if (areInputsValid){
+                    Intent intent = new Intent(CompleteUserProfile.this, SignUp.class);
+                    intent.putExtra("name", _name);
+                    intent.putExtra("contact", _contact);
+                    intent.putExtra("about", _about);
+                    intent.putExtra("gender", _gender);
+                    intent.putExtra("dob", _dob);
+                    intent.putExtra("userType", _userType);
+                    intent.putExtra("district", _selectedDistrict[0]);
+                    startActivity(intent);
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CompleteUserProfile.this);
+                    builder.setTitle("Invalid inputs!")
+                            .setMessage("Please check all inputs are given properly!")
+                            .setPositiveButton("Ok", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+
 
                 // ==============================================================================================
 
@@ -137,6 +219,16 @@ public class CompleteUserProfile extends AppCompatActivity {
                 etDob.setText(date);
             }
         };
+    }
+
+    private Boolean checkInputValidity(String name, String contact, String about, String dob, String gender, String userType, String district) {
+        if (name != null && contact != null && about != null && dob != null && gender != null && userType != null && district != null){
+            if (name.equals("") || contact.equals("") || about.equals("") || dob.equals("") || gender.equals("") || userType.equals("") || district.equals("")){
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private void clearInputs() {
