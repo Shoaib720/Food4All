@@ -359,18 +359,23 @@ public class LogIn extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (task.getResult() != null){
+                            for (QueryDocumentSnapshot document : task.getResult()) {
 //                        System.out.println(document.getId());
 //                        System.out.println(document.getData());
-                            if (document.exists()){
-                                Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
-                                startActivity(loginIntent);
+                                if (document.exists()){
+                                    Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
+                                    startActivity(loginIntent);
+                                }
+                                else {
+                                    Toast.makeText(LogIn.this, "User doesnt exist!!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else {
-                                Toast.makeText(LogIn.this, "User doesnt exist!!",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                        }else {
+                            Log.d(TAG, "Task is null");
                         }
+
                     }
                 }
             });
@@ -465,7 +470,7 @@ public class LogIn extends AppCompatActivity {
                         builder.setTitle("Email not verified!!")
                                 .setMessage("If you are a new user please sign up. If not then please verify your email from Signup section! If you have already verified then please wait and try again after sometime or resend the verification mail")
                                 .setCancelable(false)
-                                .setPositiveButton("Resend", new DialogInterface.OnClickListener() {
+                                .setNeutralButton("Resend", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         final FirebaseUser user = mAuth.getCurrentUser();

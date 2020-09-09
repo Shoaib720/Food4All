@@ -51,7 +51,7 @@ public class SignUp extends AppCompatActivity {
         etPass = (EditText) findViewById(R.id.et_signup_password);
         etConfirmPass = (EditText) findViewById(R.id.et_signup_confirm_password);
         btnRegister = (Button) findViewById(R.id.btn_signup_signup);
-        btnResendEmail = (Button) findViewById(R.id.btn_resend_link);
+//        btnResendEmail = (Button) findViewById(R.id.btn_resend_link);
 
 
         // Adding underline to signin textview
