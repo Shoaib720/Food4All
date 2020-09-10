@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -361,9 +363,35 @@ public class LogIn extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         if (task.getResult() != null){
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                        System.out.println(document.getId());
-//                        System.out.println(document.getData());
+                        System.out.println(document.getId());
+                        System.out.println(document.getData());
+                        System.out.println(document.getData().get("gender"));
+
                                 if (document.exists()){
+
+                                    try {
+                                        UserSQLiteHelper sqLiteHelper = new UserSQLiteHelper(LogIn.this);
+                                        SQLiteDatabase db = sqLiteHelper.getWritableDatabase();
+                                        ContentValues values = new ContentValues();
+                                        values.put("uid", document.getId());
+                                        values.put("name", Objects.requireNonNull(document.getData().get("name")).toString());
+                                        values.put("contact", Objects.requireNonNull(document.getData().get("contact")).toString());
+                                        values.put("about", Objects.requireNonNull(document.getData().get("about")).toString());
+                                        values.put("email", Objects.requireNonNull(document.getData().get("email")).toString());
+                                        values.put("dob", Objects.requireNonNull(document.getData().get("dob")).toString());
+                                        values.put("district", Objects.requireNonNull(document.getData().get("district")).toString());
+                                        values.put("userType", Objects.requireNonNull(document.getData().get("userType")).toString());
+
+                                        long row = db.replace("user", null, values);
+                                        Log.d(TAG, row + "");
+
+                                        Log.d(TAG, "Sqlite inserted user");
+                                    }catch (Error e){
+                                        Log.e(TAG, e.getMessage());
+                                    }
+
+
+
                                     Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
                                     startActivity(loginIntent);
                                 }
