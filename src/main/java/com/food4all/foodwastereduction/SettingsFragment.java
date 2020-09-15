@@ -1,29 +1,30 @@
 package com.food4all.foodwastereduction;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyDonations extends AppCompatActivity {
+
+public class SettingsFragment extends Fragment {
 
     private RecyclerView rvMyDonations;
     private DonationAdapter mAdapter;
@@ -34,14 +35,26 @@ public class MyDonations extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Donation> mDonations;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_donations);
 
-        rvMyDonations = (RecyclerView) findViewById(R.id.recycler_my_donations);
+    public SettingsFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View v = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        rvMyDonations = (RecyclerView) v.findViewById(R.id.recycler_set_my_donations);
         rvMyDonations.setHasFixedSize(true);
-        rvMyDonations.setLayoutManager(new LinearLayoutManager(this));
+        rvMyDonations.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mDonations = new ArrayList<>();
 
@@ -55,19 +68,11 @@ public class MyDonations extends AppCompatActivity {
                             Donation donation = docs.toObject(Donation.class);
                             mDonations.add(donation);
                         }
-                        mAdapter = new DonationAdapter(MyDonations.this, mDonations);
+                        mAdapter = new DonationAdapter(getContext(), mDonations);
                         rvMyDonations.setAdapter(mAdapter);
                     }
                 });
 
-        btnTest = (Button) findViewById(R.id.btn_new_donation);
-
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MyDonations.this, DonateFoodItem.class);
-                startActivity(intent);
-            }
-        });
+        return v;
     }
 }

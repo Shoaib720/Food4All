@@ -1,6 +1,8 @@
 package com.food4all.foodwastereduction;
 
+
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
 import java.util.List;
 
 public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.DonationViewHolder> {
@@ -34,10 +36,16 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DonationViewHolder holder, int position) {
-        Donation currentDonation = mDonations.get(position);
+    public void onBindViewHolder(@NonNull final DonationViewHolder holder, int position) {
+        final Donation currentDonation = mDonations.get(position);
         Uri imageURI = Uri.parse(currentDonation.getImageFirebaseURL());
         holder.tvDonatedItemName.setText(currentDonation.getItemName());
+        holder.food_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                passDataToDetailActivity(currentDonation);
+            }
+        });
         Picasso.get().load(currentDonation.getImageFirebaseURL()).fit().centerCrop().into(holder.ivDonatedItemImage);
         if (currentDonation.getPrice() == Donation.FREE){
             holder.tvDonatedItemPrice.setText("Price: FREE");
@@ -48,6 +56,20 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
 
     }
 
+    private void passDataToDetailActivity(Donation currentDonation) {
+        if (mContext instanceof CustomNavigation){
+            Intent intent = new Intent(mContext, FoodItemDonorDetail.class);
+            intent.putExtra("title", currentDonation.getItemName());
+            intent.putExtra("desc", currentDonation.getDescription());
+            intent.putExtra("expDate", currentDonation.getExpiryDate());
+            intent.putExtra("imageURL", currentDonation.getImageFirebaseURL());
+            intent.putExtra("price", currentDonation.getPrice());
+            mContext.startActivity(intent);
+        }
+
+
+    }
+
     @Override
     public int getItemCount() {
         return mDonations.size();
@@ -55,15 +77,18 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
 
     public class DonationViewHolder extends RecyclerView.ViewHolder{
 
+        private CardView food_item;
         public TextView tvDonatedItemName, tvDonatedItemPrice;
         public ImageView ivDonatedItemImage;
 
+
         public DonationViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            food_item = (CardView) itemView.findViewById(R.id.food_item_id);
             tvDonatedItemName = itemView.findViewById(R.id.card_item_name);
             tvDonatedItemPrice = itemView.findViewById(R.id.card_item_price);
             ivDonatedItemImage = itemView.findViewById(R.id.card_item_image);
+
         }
     }
 }

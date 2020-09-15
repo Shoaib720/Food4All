@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Food4All</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl pretium fusce id velit ut. Nisi est sit amet facilisis magna etiam. Et malesuada fames ac turpis egestas maecenas. Condimentum lacinia quis vel eros donec ac odio tempor. Leo a diam sollicitudin tempor id eu nisl. Sapien pellentesque habitant morbi tristique senectus et netus et malesuada. Sit amet cursus sit amet dictum sit amet justo. Tortor id aliquet lectus proin nibh nisl condimentum. Dignissim cras tincidunt lobortis feugiat. Sit amet luctus venenatis lectus magna fringilla urna porttitor. Nunc sed augue lacus viverra vitae congue eu consequat. Auctor augue mauris augue neque gravida. Tristique senectus et netus et. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+    </string>
+
 </resources>

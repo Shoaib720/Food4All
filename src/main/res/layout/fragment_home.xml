@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="false"
+        android:orientation="vertical"
+        android:scrollbars="vertical">
+
+
+            <EditText
+                android:id="@+id/et_frag_food_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="Enter food item name"
+                android:inputType="text"
+                android:textSize="@dimen/fontSizeNormal" />
+
+            <EditText
+                android:id="@+id/et_frag_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:hint="Description"
+                android:inputType="text"
+                android:textSize="@dimen/fontSizeNormal" />
+
+            <EditText
+                android:id="@+id/et_frag_exp_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:focusable="false"
+                android:hint="Enter expiration date of product"
+                android:inputType="date"
+                android:textSize="@dimen/fontSizeNormal" />
+
+            <EditText
+                android:id="@+id/et_frag_donor_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="Enter your email"
+                android:inputType="textEmailAddress"
+                android:textSize="@dimen/fontSizeNormal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Select district"
+                android:textSize="@dimen/fontSizeNormal" />
+
+
+            <Spinner
+                android:id="@+id/spinner_frag_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_frag_choose_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:text="Choose image" />
+
+                <EditText
+                    android:id="@+id/et_frag_image_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:hint="Enter Image name"
+                    android:inputType="text"
+                    android:textSize="@dimen/fontSizeNormal" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_frag_image"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp" />
+
+            <Button
+                android:id="@+id/btn_frag_upload"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/rectangle"
+                android:text="upload"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/fontSizeNormal" />
+
+
+    </ScrollView>
+
+
+</FrameLayout>
