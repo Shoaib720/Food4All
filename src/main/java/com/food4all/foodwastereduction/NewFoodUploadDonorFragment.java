@@ -25,7 +25,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,7 +40,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class HomeFragment extends Fragment {
+public class NewFoodUploadDonorFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Button btnChooseImage, btnUpload;
@@ -59,7 +58,7 @@ public class HomeFragment extends Fragment {
 
     final String[] _selectedDistrict = new String[1];
 
-    public HomeFragment() {
+    public NewFoodUploadDonorFragment() {
         // Required empty public constructor
     }
 
@@ -77,7 +76,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View v = inflater.inflate(R.layout.fragment_home, container, false);
+        final View v = inflater.inflate(R.layout.fragment_donor_new_food_item_upload, container, false);
 
         btnChooseImage = (Button) v.findViewById(R.id.btn_frag_choose_image);
         btnUpload = (Button) v.findViewById(R.id.btn_frag_upload);

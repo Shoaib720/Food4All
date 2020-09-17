@@ -57,7 +57,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     }
 
     private void passDataToDetailActivity(Donation currentDonation) {
-        if (mContext instanceof CustomNavigation){
+        if (mContext instanceof DonorNavigation){
             Intent intent = new Intent(mContext, FoodItemDonorDetail.class);
             intent.putExtra("title", currentDonation.getItemName());
             intent.putExtra("desc", currentDonation.getDescription());

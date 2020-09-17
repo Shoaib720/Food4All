@@ -6,5 +6,21 @@
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl pretium fusce id velit ut. Nisi est sit amet facilisis magna etiam. Et malesuada fames ac turpis egestas maecenas. Condimentum lacinia quis vel eros donec ac odio tempor. Leo a diam sollicitudin tempor id eu nisl. Sapien pellentesque habitant morbi tristique senectus et netus et malesuada. Sit amet cursus sit amet dictum sit amet justo. Tortor id aliquet lectus proin nibh nisl condimentum. Dignissim cras tincidunt lobortis feugiat. Sit amet luctus venenatis lectus magna fringilla urna porttitor. Nunc sed augue lacus viverra vitae congue eu consequat. Auctor augue mauris augue neque gravida. Tristique senectus et netus et. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
     </string>
+    <string name="app_description">
+        The app <i><b>Food4All</b></i> is developed to help the needy people get access to donated food items.\n\n
+        There are 2 types of user accounts in the app\:\n
+        1. Donor\n
+        2. Beneficiary\n\n
+        Donor can donate food item and also view his/her donations.\n
+        Beneficiary can either benefit oneself or give it to other person in need and who doesn\'t have smart phone or this app.\n\n
+        Let us experience <b>\"Joy of Giving\"</b> together!!!
+    </string>
+
+    <string name="app_credits">
+        <i>Designed, developed \&amp; maintained by:</i>\n\n
+        <i>Aditi Mulik</i>\n
+        <i>Priyanka Katkar</i>\n
+        <i>Shoaib Shaikh</i>
+    </string>
 
 </resources>

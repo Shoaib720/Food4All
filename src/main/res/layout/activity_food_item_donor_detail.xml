@@ -15,16 +15,6 @@
         tools:context=".FoodItemDonorDetail">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="Food Product Details"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:background="@drawable/rectangle"
-            />
-
-        <TextView
             android:id="@+id/donor_food_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

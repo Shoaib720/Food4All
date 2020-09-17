@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:openDrawer="start"
-    tools:context=".CustomNavigation">
+    tools:context=".DonorNavigation">
     
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/toolbar"
-            app:title="Navigation drawer"
+            app:title="Welcome"
             android:background="@color/colorAccent"
             app:titleTextColor="#ffffff"
             />
