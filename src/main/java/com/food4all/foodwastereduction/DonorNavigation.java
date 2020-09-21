@@ -104,8 +104,11 @@ public class DonorNavigation extends AppCompatActivity {
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        LoadingSpinner loadingSpinner = new LoadingSpinner(DonorNavigation.this, "Signing out...");
                         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        loadingSpinner.startLoadingSpinner();
                         mAuth.signOut();
+                        loadingSpinner.stopLoadingSpinner();
                         Intent intent = new Intent(DonorNavigation.this, LogIn.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);

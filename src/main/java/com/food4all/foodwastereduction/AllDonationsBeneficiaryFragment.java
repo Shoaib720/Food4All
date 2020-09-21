@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -61,8 +64,10 @@ public class AllDonationsBeneficiaryFragment extends Fragment {
         rvAllDonations.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mDonations = new ArrayList<>();
+        final LoadingSpinner loadingSpinner = new LoadingSpinner(getActivity(), "Retrieving items...");
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null){
+            loadingSpinner.startLoadingSpinner();
                 UserSQLiteHelper sqLiteHelper = new UserSQLiteHelper(view.getContext());
                 SQLiteDatabase sqLiteDatabase = sqLiteHelper.getReadableDatabase();
                 Cursor mCursor = sqLiteDatabase.rawQuery("select district from user where email='" + currentUser.getEmail() + "'", null);
@@ -81,11 +86,20 @@ public class AllDonationsBeneficiaryFragment extends Fragment {
                                             Donation donation = docs.toObject(Donation.class);
                                             mDonations.add(donation);
                                         }
+                                        loadingSpinner.stopLoadingSpinner();
                                         mAdapter = new DonationAdapter(getContext(), mDonations);
                                         rvAllDonations.setAdapter(mAdapter);
                                     }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingSpinner.stopLoadingSpinner();
+                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 });
                     }else {
+                        loadingSpinner.stopLoadingSpinner();
                         tvShowNoDonations.setVisibility(View.VISIBLE);
                     }
                     mCursor.close();

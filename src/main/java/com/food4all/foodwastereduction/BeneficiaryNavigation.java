@@ -96,6 +96,7 @@ public class BeneficiaryNavigation extends AppCompatActivity {
     }
 
     private void signOutWithAlert() {
+        final LoadingSpinner loadingSpinner = new LoadingSpinner(BeneficiaryNavigation.this, "Signing out...");
         AlertDialog.Builder builder = new AlertDialog.Builder(BeneficiaryNavigation.this);
         builder.setTitle("Confirm Logout")
                 .setMessage("Are you sure you want to exit?")
@@ -103,7 +104,9 @@ public class BeneficiaryNavigation extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        loadingSpinner.startLoadingSpinner();
                         mAuth.signOut();
+                        loadingSpinner.stopLoadingSpinner();
                         Intent intent = new Intent(BeneficiaryNavigation.this, LogIn.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);

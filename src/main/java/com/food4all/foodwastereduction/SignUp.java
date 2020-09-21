@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.security.acl.LastOwnerException;
 import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
@@ -222,7 +223,9 @@ public class SignUp extends AppCompatActivity {
 //        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users");
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
+        final LoadingSpinner loadingSpinnerCreateUser = new LoadingSpinner(SignUp.this, "Creating user...");
+        final LoadingSpinner loadingSpinnerSendEmail = new LoadingSpinner(SignUp.this, "Sending verification email...");
+        loadingSpinnerCreateUser.startLoadingSpinner();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -231,16 +234,19 @@ public class SignUp extends AppCompatActivity {
                             Log.d("Success", "createUserWithEmail:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null){
+                                loadingSpinnerSendEmail.startLoadingSpinner();
                                 user.sendEmailVerification()
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
+                                                loadingSpinnerSendEmail.stopLoadingSpinner();
                                                 UserHelper newUser = new UserHelper(_name, _contact, email, _about, _dob, _gender, _district, _userType);
                                                 db.collection("users")
                                                         .add(newUser)
                                                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                             @Override
                                                             public void onSuccess(DocumentReference documentReference) {
+                                                                loadingSpinnerCreateUser.stopLoadingSpinner();
                                                                 Toast.makeText(SignUp.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
                                                                 updateUI(user);
                                                             }
@@ -248,6 +254,7 @@ public class SignUp extends AppCompatActivity {
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
+                                                                loadingSpinnerCreateUser.stopLoadingSpinner();
                                                                 Log.d("onFailure","Data not added: " + e.getMessage());
                                                             }
                                                         });
@@ -270,6 +277,7 @@ public class SignUp extends AppCompatActivity {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                loadingSpinnerSendEmail.stopLoadingSpinner();
                                                 Log.d("onFailure","Email not sent: " + e.getMessage());
                                                 updateUI(null);
                                             }
@@ -280,6 +288,7 @@ public class SignUp extends AppCompatActivity {
                         }
                         else {
                             // If sign in fails, display a message to the user.
+                            loadingSpinnerCreateUser.stopLoadingSpinner();
                             Log.w("SigninFailure", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(SignUp.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();

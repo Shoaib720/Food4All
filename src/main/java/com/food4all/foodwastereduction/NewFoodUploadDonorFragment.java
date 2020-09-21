@@ -53,6 +53,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
     private Button btnTest;
     DatePickerDialog.OnDateSetListener mDateSetListener;
 
+
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("uploads");
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -191,13 +192,15 @@ public class NewFoodUploadDonorFragment extends Fragment {
     }
 
     private String getFileExtension(Uri uri){
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = Objects.requireNonNull(getActivity()).getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 
     private void uploadImage() {
+        final LoadingSpinner loadingSpinner = new LoadingSpinner(getActivity(), "Uploading image...");
         if (imageUri != null){
+            loadingSpinner.startLoadingSpinner();
             StorageReference fileReference = storageReference.child(etImageName.getText().toString().trim() + System.currentTimeMillis() + "." + getFileExtension(imageUri));
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -208,9 +211,11 @@ public class NewFoodUploadDonorFragment extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Uri> task) {
                                             if (task.getResult() != null){
+                                                loadingSpinner.stopLoadingSpinner();
                                                 String imageFirebaseUrl = task.getResult().toString();
                                                 storeToDatabase(imageFirebaseUrl);
                                             }else{
+                                                loadingSpinner.stopLoadingSpinner();
                                                 Log.e(TAG, "No result returned");
                                             }
 
@@ -219,6 +224,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
+                                            loadingSpinner.stopLoadingSpinner();
                                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                         }
                                     });
@@ -227,10 +233,12 @@ public class NewFoodUploadDonorFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            loadingSpinner.stopLoadingSpinner();
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         }else {
+            loadingSpinner.stopLoadingSpinner();
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_LONG).show();
         }
     }
@@ -246,7 +254,9 @@ public class NewFoodUploadDonorFragment extends Fragment {
             String expiryDate = etExpiryDate.getText().toString();
             int price = Donation.FREE;
 
+            final LoadingSpinner loadingSpinner = new LoadingSpinner(getActivity(), "Uploading to database...");
             Donation newDonation = new Donation(itemName, donorEmail, null, donorCity, imageFirebaseUrl, description, status, expiryDate, null, price);
+            loadingSpinner.startLoadingSpinner();
             db.collection("donations")
                     .add(newDonation)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -254,12 +264,16 @@ public class NewFoodUploadDonorFragment extends Fragment {
                         public void onSuccess(DocumentReference documentReference) {
                             String id = documentReference.getId();
                             db.collection("donations").document(id).update("itemID", id);
+                            loadingSpinner.stopLoadingSpinner();
                             Toast.makeText(getContext(), "Uploaded successfully", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getContext(), DonorNavigation.class);
+                            startActivity(intent);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            loadingSpinner.stopLoadingSpinner();
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });

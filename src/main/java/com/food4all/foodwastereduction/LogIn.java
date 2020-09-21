@@ -98,16 +98,20 @@ public class LogIn extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String email = etForgotPass.getText().toString();
+                                final LoadingSpinner loadingSpinnerPasswordReset = new LoadingSpinner(LogIn.this, "Sending password reset email...");
+                                loadingSpinnerPasswordReset.startLoadingSpinner();
                                 mAuth.sendPasswordResetEmail(email)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
+                                                loadingSpinnerPasswordReset.stopLoadingSpinner();
                                                 Toast.makeText(LogIn.this, "Email sent", Toast.LENGTH_LONG).show();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                loadingSpinnerPasswordReset.stopLoadingSpinner();
                                                 Toast.makeText(LogIn.this, "Unable to send email. Please try again", Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -346,7 +350,8 @@ public class LogIn extends AppCompatActivity {
 
         if (user.getEmail() != null){
             final String email = user.getEmail().split("@")[0];
-
+            final LoadingSpinner loadingSpinner = new LoadingSpinner(LogIn.this, "Logging in...");
+            loadingSpinner.startLoadingSpinner();
             FirebaseFirestore rootnode = FirebaseFirestore.getInstance();
             CollectionReference usersNode = rootnode.collection("users");
             Query query = usersNode.whereEqualTo("email", user.getEmail());
@@ -381,9 +386,11 @@ public class LogIn extends AppCompatActivity {
                                     }
 
                                     if ((Objects.requireNonNull(document.getData().get("userType")).toString()).equals("Donor")){
+                                        loadingSpinner.stopLoadingSpinner();
                                         Intent loginDonorIntent = new Intent(LogIn.this, DonorNavigation.class);
                                         startActivity(loginDonorIntent);
                                     }else if ((Objects.requireNonNull(document.getData().get("userType")).toString()).equals("Beneficiary")){
+                                        loadingSpinner.stopLoadingSpinner();
                                         Intent loginBeneficiaryIntent = new Intent(LogIn.this, BeneficiaryNavigation.class);
                                         startActivity(loginBeneficiaryIntent);
                                     }
@@ -401,6 +408,7 @@ public class LogIn extends AppCompatActivity {
                         }
 
                     }
+                    loadingSpinner.stopLoadingSpinner();
                 }
             });
         }else {

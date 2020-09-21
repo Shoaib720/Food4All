@@ -123,10 +123,10 @@ public class CompleteUserProfile extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer rbGenderSelectedId = rgGender.getCheckedRadioButtonId();
+                int rbGenderSelectedId = rgGender.getCheckedRadioButtonId();
                 rbGenderSelected = (RadioButton) findViewById(rbGenderSelectedId);
 
-                Integer rbUserTypeSelectedId = rgUserType.getCheckedRadioButtonId();
+                int rbUserTypeSelectedId = rgUserType.getCheckedRadioButtonId();
                 rbUserTypeSelected = (RadioButton) findViewById(rbUserTypeSelectedId);
 
                 String _name = etName.getText().toString();
