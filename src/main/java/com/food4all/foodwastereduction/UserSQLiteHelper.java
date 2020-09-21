@@ -14,7 +14,7 @@ public class UserSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table if not exists user (uid text, name text, contact text, email text, about text, dob text, district text, userType text, unique(uid))");
+        db.execSQL("create table if not exists user (uid text, name text, contact text, email text, about text, dob text, district text, userType text, unique(email))");
     }
 
     @Override

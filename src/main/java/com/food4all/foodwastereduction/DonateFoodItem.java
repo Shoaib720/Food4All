@@ -236,12 +236,14 @@ public class DonateFoodItem extends AppCompatActivity {
         String expiryDate = etExpiryDate.getText().toString();
         int price = Donation.FREE;
 
-        Donation newDonation = new Donation(itemName, donorEmail, donorCity, imageFirebaseUrl, description, status, expiryDate, price);
+        Donation newDonation = new Donation(itemName, donorEmail, null, donorCity, imageFirebaseUrl, description, status, expiryDate, null, price);
         db.collection("donations")
                 .add(newDonation)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        String id = documentReference.getId();
+                        db.collection("donations").document(id).update("itemID", id);
                         Toast.makeText(DonateFoodItem.this, "Uploaded successfully", Toast.LENGTH_LONG).show();
                     }
                 })

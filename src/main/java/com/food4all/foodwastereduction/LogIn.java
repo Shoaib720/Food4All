@@ -356,9 +356,6 @@ public class LogIn extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         if (task.getResult() != null){
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                        System.out.println(document.getId());
-                        System.out.println(document.getData());
-                        System.out.println(document.getData().get("gender"));
 
                                 if (document.exists()){
 
@@ -387,7 +384,7 @@ public class LogIn extends AppCompatActivity {
                                         Intent loginDonorIntent = new Intent(LogIn.this, DonorNavigation.class);
                                         startActivity(loginDonorIntent);
                                     }else if ((Objects.requireNonNull(document.getData().get("userType")).toString()).equals("Beneficiary")){
-                                        Intent loginBeneficiaryIntent = new Intent(LogIn.this, Dashboard.class);
+                                        Intent loginBeneficiaryIntent = new Intent(LogIn.this, BeneficiaryNavigation.class);
                                         startActivity(loginBeneficiaryIntent);
                                     }
 

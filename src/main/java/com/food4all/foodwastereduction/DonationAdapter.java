@@ -64,6 +64,21 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             intent.putExtra("expDate", currentDonation.getExpiryDate());
             intent.putExtra("imageURL", currentDonation.getImageFirebaseURL());
             intent.putExtra("price", currentDonation.getPrice());
+            intent.putExtra("status", currentDonation.getStatus());
+            intent.putExtra("receiverEmail", currentDonation.getReceiverEmail());
+            mContext.startActivity(intent);
+        }else if (mContext instanceof BeneficiaryNavigation){
+            Intent intent = new Intent(mContext, FoodItemBeneficiaryDetail.class);
+            intent.putExtra("title", currentDonation.getItemName());
+            intent.putExtra("desc", currentDonation.getDescription());
+            intent.putExtra("expDate", currentDonation.getExpiryDate());
+            intent.putExtra("imageURL", currentDonation.getImageFirebaseURL());
+            intent.putExtra("price", currentDonation.getPrice());
+            intent.putExtra("status", currentDonation.getStatus());
+            intent.putExtra("receiverEmail", currentDonation.getReceiverEmail());
+            intent.putExtra("donorEmail", currentDonation.getDonorEmail());
+            intent.putExtra("itemID", currentDonation.getItemID());
+            System.out.println(currentDonation.getItemID());
             mContext.startActivity(intent);
         }
 

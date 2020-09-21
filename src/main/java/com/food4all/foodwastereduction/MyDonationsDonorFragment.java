@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -24,9 +26,8 @@ public class MyDonationsDonorFragment extends Fragment {
 
     private RecyclerView rvMyDonations;
     private DonationAdapter mAdapter;
-    private Button btnTest;
 
-    private String TAG = MyDonations.class.getSimpleName();
+    private String TAG = MyDonationsDonorFragment.class.getSimpleName();
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Donation> mDonations;
@@ -53,21 +54,25 @@ public class MyDonationsDonorFragment extends Fragment {
         rvMyDonations.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mDonations = new ArrayList<>();
-
-        db.collection("donations")
-//                .whereEqualTo("donorEmail", "shoaib@gmail.com")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(DocumentSnapshot docs : queryDocumentSnapshots.getDocuments()){
-                            Donation donation = docs.toObject(Donation.class);
-                            mDonations.add(donation);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null){
+            db.collection("donations")
+                .whereEqualTo("donorEmail", currentUser.getEmail())
+                    .whereEqualTo("status", Donation.AVAILABLE)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for(DocumentSnapshot docs : queryDocumentSnapshots.getDocuments()){
+                                Donation donation = docs.toObject(Donation.class);
+                                mDonations.add(donation);
+                            }
+                            mAdapter = new DonationAdapter(getContext(), mDonations);
+                            rvMyDonations.setAdapter(mAdapter);
                         }
-                        mAdapter = new DonationAdapter(getContext(), mDonations);
-                        rvMyDonations.setAdapter(mAdapter);
-                    }
-                });
+                    });
+        }
+
 
         return v;
     }

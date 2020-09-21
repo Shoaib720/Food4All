@@ -31,6 +31,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -85,7 +87,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
         etDescription = (EditText) v.findViewById(R.id.et_frag_description);
         etExpiryDate = (EditText) v.findViewById(R.id.et_frag_exp_date);
         etImageName = (EditText) v.findViewById(R.id.et_frag_image_name);
-        etDonorEmail = (EditText) v.findViewById(R.id.et_frag_donor_email);
+//        etDonorEmail = (EditText) v.findViewById(R.id.et_frag_donor_email);
         spinnerDistrict = (Spinner) v.findViewById(R.id.spinner_frag_district);
 
         final String[] district = {
@@ -207,7 +209,6 @@ public class NewFoodUploadDonorFragment extends Fragment {
                                         public void onComplete(@NonNull Task<Uri> task) {
                                             if (task.getResult() != null){
                                                 String imageFirebaseUrl = task.getResult().toString();
-                                                Toast.makeText(getView().getContext(), imageFirebaseUrl, Toast.LENGTH_LONG).show();
                                                 storeToDatabase(imageFirebaseUrl);
                                             }else{
                                                 Log.e(TAG, "No result returned");
@@ -235,29 +236,35 @@ public class NewFoodUploadDonorFragment extends Fragment {
     }
 
     private void storeToDatabase(String imageFirebaseUrl) {
-        String itemName = etFoodName.getText().toString();
-        String donorEmail = etDonorEmail.getText().toString();
-        String donorCity = _selectedDistrict[0];
-        String description = etDescription.getText().toString();
-        int status = Donation.AVAILABLE;
-        String expiryDate = etExpiryDate.getText().toString();
-        int price = Donation.FREE;
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null){
+            String itemName = etFoodName.getText().toString();
+            String donorEmail = currentUser.getEmail();
+            String donorCity = _selectedDistrict[0];
+            String description = etDescription.getText().toString();
+            int status = Donation.AVAILABLE;
+            String expiryDate = etExpiryDate.getText().toString();
+            int price = Donation.FREE;
 
-        Donation newDonation = new Donation(itemName, donorEmail, donorCity, imageFirebaseUrl, description, status, expiryDate, price);
-        db.collection("donations")
-                .add(newDonation)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(getContext(), "Uploaded successfully", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+            Donation newDonation = new Donation(itemName, donorEmail, null, donorCity, imageFirebaseUrl, description, status, expiryDate, null, price);
+            db.collection("donations")
+                    .add(newDonation)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            String id = documentReference.getId();
+                            db.collection("donations").document(id).update("itemID", id);
+                            Toast.makeText(getContext(), "Uploaded successfully", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
     }
 
     private void openFileChooser() {
