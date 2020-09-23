@@ -98,9 +98,9 @@ public class BeneficiaryNavigation extends AppCompatActivity {
     private void signOutWithAlert() {
         final LoadingSpinner loadingSpinner = new LoadingSpinner(BeneficiaryNavigation.this, "Signing out...");
         AlertDialog.Builder builder = new AlertDialog.Builder(BeneficiaryNavigation.this);
-        builder.setTitle("Confirm Logout")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+        builder.setTitle("Confirm sign out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton("Sign out", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         FirebaseAuth mAuth = FirebaseAuth.getInstance();

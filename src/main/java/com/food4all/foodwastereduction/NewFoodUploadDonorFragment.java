@@ -1,9 +1,12 @@
 package com.food4all.foodwastereduction;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -11,8 +14,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,19 +44,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class NewFoodUploadDonorFragment extends Fragment {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private Button btnChooseImage, btnUpload;
+    private static final int CHOOSE_IMAGE_FROM_DEVICE_REQUEST = 1, CLICK_IMAGE_FROM_CAMERA = 2;
+    private Button btnChooseImage, btnUpload, btnChooseImageFromDevice, btnClickImageFromCamera;
     private ImageView ivFoodImage;
     private EditText etFoodName, etDescription, etExpiryDate, etImageName, etDonorEmail;
     private Spinner spinnerDistrict;
-    private Uri imageUri;
+    private Uri imageUri, photoURI;
     private Button btnTest;
+    private AlertDialog dialogImageUploadChoice;
     DatePickerDialog.OnDateSetListener mDateSetListener;
 
 
@@ -146,7 +161,29 @@ public class NewFoodUploadDonorFragment extends Fragment {
         btnChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openFileChooser();
+                Activity activity = getActivity();
+                if (activity != null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    LayoutInflater inflater = activity.getLayoutInflater();
+                    View uploadImageView = inflater.inflate(R.layout.upload_image_layout, null);
+                    btnChooseImageFromDevice = (Button) uploadImageView.findViewById(R.id.btn_upload_layout_choose);
+                    btnClickImageFromCamera = (Button) uploadImageView.findViewById(R.id.btn_upload_layout_click);
+                    btnChooseImageFromDevice.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openFileChooser();
+                        }
+                    });
+                    btnClickImageFromCamera.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openCamera();
+                        }
+                    });
+                    builder.setView(uploadImageView);
+                    dialogImageUploadChoice = builder.create();
+                    dialogImageUploadChoice.show();
+                }
             }
         });
 
@@ -238,7 +275,6 @@ public class NewFoodUploadDonorFragment extends Fragment {
                         }
                     });
         }else {
-            loadingSpinner.stopLoadingSpinner();
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_LONG).show();
         }
     }
@@ -281,21 +317,78 @@ public class NewFoodUploadDonorFragment extends Fragment {
 
     }
 
+    private void openCamera() {
+        Intent clickImageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (clickImageIntent.resolveActivity(Objects.requireNonNull(getActivity()).getPackageManager()) != null){
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                imageUri = FileProvider.getUriForFile(Objects.requireNonNull(getContext()),
+                        "com.example.android.fileprovider",
+                        photoFile);
+                clickImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(clickImageIntent, CLICK_IMAGE_FROM_CAMERA);
+            }
+            
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Objects.requireNonNull(getActivity()).getFilesDir();
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        return image;
+    }
+
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        startActivityForResult(intent, CHOOSE_IMAGE_FROM_DEVICE_REQUEST);
     }
 
     @Override
    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
-            imageUri = data.getData();
-            ivFoodImage.setImageURI(imageUri);
+        switch (requestCode) {
+            case CLICK_IMAGE_FROM_CAMERA:
+                if (resultCode == Activity.RESULT_OK) {
+                    Bitmap bitmap;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), imageUri);
+                        ivFoodImage.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Log.d(TAG, "result not ok in camera");
+                }
+                break;
+            case CHOOSE_IMAGE_FROM_DEVICE_REQUEST:
+                if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+                    imageUri = data.getData();
+                    ivFoodImage.setImageURI(imageUri);
+                }
+                else {
+                    Log.d(TAG, "result not ok in choose from device");
+                }
+                break;
+
         }
+        dialogImageUploadChoice.dismiss();
     }
 
 }

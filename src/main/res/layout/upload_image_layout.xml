@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/upload_image_layout"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_upload_layout_click"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:text="Camera"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:background="#401060"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"/>
+
+    <Button
+        android:id="@+id/btn_upload_layout_choose"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Choose from device"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:background="#401060"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"/>
+
+
+</LinearLayout>

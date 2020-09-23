@@ -8,7 +8,7 @@ public class Donation {
     private String itemName, donorEmail, receiverEmail, donorCity, description, expiryDate, itemID;
     private String imageFirebaseURL;
     private int price, status;
-    public static int AVAILABLE = 0, RECEIVED = 1, INVALID = -1, FREE = 0;
+    public static int AVAILABLE = 0, REQUESTED = 1, RECEIVED = 2, INVALID = -1, FREE = 0;
 
     public Donation() {
     }

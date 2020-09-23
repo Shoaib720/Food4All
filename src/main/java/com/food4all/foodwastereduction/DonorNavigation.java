@@ -99,9 +99,9 @@ public class DonorNavigation extends AppCompatActivity {
 
     private void signOutWithAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DonorNavigation.this);
-        builder.setTitle("Confirm Logout")
-                .setMessage("Are you sure you want to exit?")
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+        builder.setTitle("Confirm sign out")
+                .setMessage("Are you sure you want to Sign out?")
+                .setPositiveButton("Sign out", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         LoadingSpinner loadingSpinner = new LoadingSpinner(DonorNavigation.this, "Signing out...");

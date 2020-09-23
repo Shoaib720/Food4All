@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="false"
     android:orientation="vertical"
-    android:scrollbars="vertical"
-    android:fillViewport="false">
+    android:scrollbars="vertical">
 
     <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -18,60 +19,107 @@
             android:id="@+id/donor_food_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:layout_marginTop="5dp"
             android:gravity="center"
-            android:textSize="30sp"
-            android:layout_marginTop="5dp"/>
+            android:text="Title"
+            android:textSize="30sp" />
+
 
         <ImageView
             android:id="@+id/donor_food_item_image"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/logo"/>
+            android:src="@drawable/logo" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description:"
-            android:textSize="25sp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:text="Description:"
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/donor_food_item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lorem_ipsum"
-            android:layout_marginTop="5dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="15dp"
-            android:textSize="20sp"/>
+            android:text="@string/lorem_ipsum"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/donor_food_item_exp_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Expiry Date: 18/9/2020"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="15dp"
-            android:textSize="20sp"/>
+            android:text="Expiry Date: 18/9/2020"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/donor_food_item_requested_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="15dp"
+            android:visibility="gone"
+            android:text="Requested by:"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/donor_food_item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Price: FREE"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="50dp"
-            android:textSize="20sp"/>
+            android:text="Price: FREE"
+            android:textSize="20sp" />
 
+
+        <LinearLayout
+            android:id="@+id/btngroup_donor_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="50dp"
+            android:visibility="gone"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btn_donor_grant_request_item"
+                android:layout_width="130dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="20dp"
+                android:background="#00ff00"
+                android:text="Grant"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_donor_reject_request_item"
+                android:layout_width="130dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:background="#ff0000"
+                android:text="Reject"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -245,80 +248,43 @@ public class LogIn extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-
-                // if user is not null
-                // means user is already logged in
-                if(user != null){
-
-                    // Reload the user state
-                    // Coz any state is cached in the device
-                    // So in order to update it we perform a reload
-                    Task<Void> usertask = Objects.requireNonNull(mAuth.getCurrentUser()).reload();
-                    usertask.addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            // Check if the user is verified
-
-                            if(user.isEmailVerified()){
-
-                                loginOnlyIfEmailVerifiedAndUserDataExists(user);
-
-
-                                // Email is verified
-                                // transfer the flow to Complete user profile
-//                                Intent loginIntent = new Intent(LogIn.this, CompleteUserProfile.class);
-//                                startActivity(loginIntent);
-                            }
-                            else {
-
-                                // email is not verified
-                                // Toast the user about the same
-                                // Perform not flow transfer
-                                Toast.makeText(LogIn.this, "Email not verified",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-
-                // if user is null
-                // existing user is attempting login
-                else{
-
+                if(user == null){
                     // get user's email and password
                     final String email = etEmail.getText().toString();
                     final String password = etPassword.getText().toString();
 
-                    // signin using email and password
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LogIn.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()){
+                    if (email.equals("") || password.equals("")) {
+                        Toast.makeText(LogIn.this, "Please enter valid credentials!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        // signin using email and password
+                        mAuth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(LogIn.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()){
 
-                                        // Signin success
-                                        // get the current user
-                                        // update the UI
-                                        Log.d("Success", "sign in success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        updateUI(user);
-                                    }
-                                    else {
+                                            // Signin success
+                                            // get the current user
+                                            // update the UI
+                                            Log.d("Success", "sign in success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            updateUI(user);
+                                        }
+                                        else {
 
-                                        // Signin failed
-                                        // Taost user about the same
-                                        // Update the UI accordingly
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(LogIn.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                        updateUI(null);
+                                            // Signin failed
+                                            // Taost user about the same
+                                            // Update the UI accordingly
+                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(LogIn.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            updateUI(null);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                    }
+
                 }
-
             }
         });
 
@@ -482,9 +448,33 @@ public class LogIn extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (
+                    getApplicationContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ){
+                requestPermissions(new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         checkIfUserIsLoggedin(user);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(LogIn.this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(LogIn.this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+            if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(LogIn.this, "External write Permission Granted", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(LogIn.this, "External write Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void checkIfUserIsLoggedin(FirebaseUser user) {
@@ -510,6 +500,8 @@ public class LogIn extends AppCompatActivity {
                                         // If user not null then send the verification email
                                         // It simply means that the user is logged in
                                         if (user != null){
+                                            final LoadingSpinner loadingSpinnerEmailVerification = new LoadingSpinner(LogIn.this, "Sending verification email...");
+                                            loadingSpinnerEmailVerification.startLoadingSpinner();
                                             user.sendEmailVerification()
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
@@ -517,6 +509,7 @@ public class LogIn extends AppCompatActivity {
 
                                                             // Email sent successfully to the user
                                                             // Toast the user about the same
+                                                            loadingSpinnerEmailVerification.stopLoadingSpinner();
                                                             Toast.makeText(LogIn.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
                                                         }
                                                     })
@@ -526,6 +519,7 @@ public class LogIn extends AppCompatActivity {
 
                                                             // Email wasn't sent to the user
                                                             // Log the error
+                                                            loadingSpinnerEmailVerification.stopLoadingSpinner();
                                                             Log.d(TAG, "Email not sent: " + e.getMessage());
 
                                                             // Delete the user created by the Firebase

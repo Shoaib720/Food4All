@@ -54,6 +54,16 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             holder.tvDonatedItemPrice.setText("Price: " + currentDonation.getPrice() + " INR");
         }
 
+        if (currentDonation.getStatus() == Donation.AVAILABLE){
+            holder.tvDonatedItemStatus.setText("AVAILABLE");
+        }
+        else if (currentDonation.getStatus() == Donation.REQUESTED){
+            holder.tvDonatedItemStatus.setText("REQUESTED");
+        }
+        else if (currentDonation.getStatus() == Donation.RECEIVED){
+            holder.tvDonatedItemStatus.setText("RECEIVED");
+        }
+
     }
 
     private void passDataToDetailActivity(Donation currentDonation) {
@@ -65,6 +75,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             intent.putExtra("imageURL", currentDonation.getImageFirebaseURL());
             intent.putExtra("price", currentDonation.getPrice());
             intent.putExtra("status", currentDonation.getStatus());
+            intent.putExtra("itemID", currentDonation.getItemID());
             intent.putExtra("receiverEmail", currentDonation.getReceiverEmail());
             mContext.startActivity(intent);
         }else if (mContext instanceof BeneficiaryNavigation){
@@ -93,7 +104,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     public class DonationViewHolder extends RecyclerView.ViewHolder{
 
         private CardView food_item;
-        public TextView tvDonatedItemName, tvDonatedItemPrice;
+        public TextView tvDonatedItemName, tvDonatedItemPrice, tvDonatedItemStatus;
         public ImageView ivDonatedItemImage;
 
 
@@ -103,7 +114,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             tvDonatedItemName = itemView.findViewById(R.id.card_item_name);
             tvDonatedItemPrice = itemView.findViewById(R.id.card_item_price);
             ivDonatedItemImage = itemView.findViewById(R.id.card_item_image);
-
+            tvDonatedItemStatus = itemView.findViewById(R.id.card_item_status);
         }
     }
 }

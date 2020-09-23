@@ -63,7 +63,6 @@ public class MyDonationsDonorFragment extends Fragment {
             loadingSpinner.startLoadingSpinner();
             db.collection("donations")
                 .whereEqualTo("donorEmail", currentUser.getEmail())
-                    .whereEqualTo("status", Donation.AVAILABLE)
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override

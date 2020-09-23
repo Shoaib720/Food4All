@@ -48,7 +48,7 @@ public class FoodItemBeneficiaryDetail extends AppCompatActivity {
         TextView tvPrice = (TextView) findViewById(R.id.beneficiary_food_item_price);
         ImageView ivImage = (ImageView) findViewById(R.id.beneficiary_food_item_image);
         TextView tvDonorEmail = (TextView) findViewById(R.id.beneficiary_food_item_donor_email);
-        Button btnGetItem = (Button) findViewById(R.id.btn_beneficiary_get_item);
+        Button btnRequestItem = (Button) findViewById(R.id.btn_beneficiary_request_item);
 
 
         intent = getIntent();
@@ -97,19 +97,19 @@ public class FoodItemBeneficiaryDetail extends AppCompatActivity {
             tvPrice.setText("Price: " + price + " INR");
         }
 
-        if (receiverEmail != null && status == Donation.RECEIVED){
-            btnGetItem.setVisibility(View.GONE);
+        if (receiverEmail != null && (status == Donation.RECEIVED || status == Donation.REQUESTED)){
+            btnRequestItem.setVisibility(View.GONE);
         }
-        btnGetItem.setOnClickListener(new View.OnClickListener() {
+        btnRequestItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodItemBeneficiaryDetail.this);
-                builder.setTitle("Confirm Purchase")
-                        .setMessage("Are you sure you want to get this item?")
+                builder.setTitle("Confirm Request")
+                        .setMessage("Are you sure you want to request this item?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                onConfirmPurchase(itemID);
+                                onConfirmRequest(itemID);
                             }
                         })
                         .setNegativeButton("No", null);
@@ -121,20 +121,30 @@ public class FoodItemBeneficiaryDetail extends AppCompatActivity {
 
     }
 
-    private void onConfirmPurchase(String itemID) {
+    private void onConfirmRequest(String itemID) {
         if (itemID != null){
             FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null){
                 DocumentReference documentReference = mDatabase.collection("donations").document(itemID);
-                documentReference.update("status", Donation.RECEIVED);
+                documentReference.update("status", Donation.REQUESTED);
                 documentReference.update("receiverEmail", currentUser.getEmail())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(FoodItemBeneficiaryDetail.this, "Item Purchased Successfully!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(FoodItemBeneficiaryDetail.this, BeneficiaryNavigation.class);
-                                startActivity(intent);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(FoodItemBeneficiaryDetail.this);
+                                builder.setTitle("Request sent!")
+                                        .setMessage("Request has been successfully sent to the donor. You will be contacted by the donor via email.")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = new Intent(FoodItemBeneficiaryDetail.this, BeneficiaryNavigation.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .setCancelable(false);
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -145,6 +155,8 @@ public class FoodItemBeneficiaryDetail extends AppCompatActivity {
                         });
             }
 
+        }else {
+            Toast.makeText(this, "ItemID is null!", Toast.LENGTH_SHORT).show();
         }
     }
 
