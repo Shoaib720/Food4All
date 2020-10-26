@@ -1,11 +1,13 @@
 package com.food4all.foodwastereduction;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -161,7 +163,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
         btnChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Activity activity = getActivity();
+                final Activity activity = getActivity();
                 if (activity != null){
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     LayoutInflater inflater = activity.getLayoutInflater();
@@ -177,7 +179,14 @@ public class NewFoodUploadDonorFragment extends Fragment {
                     btnClickImageFromCamera.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openCamera();
+                            if (
+                                    activity.getApplicationContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || activity.getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                            ){
+                                requestPermissions(new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            }
+                            else{
+                                openCamera();
+                            }
                         }
                     });
                     builder.setView(uploadImageView);
@@ -356,6 +365,18 @@ public class NewFoodUploadDonorFragment extends Fragment {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, CHOOSE_IMAGE_FROM_DEVICE_REQUEST);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                openCamera();
+            }else {
+                Toast.makeText(getActivity(), "You need to allow the permissions to use Camera!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
