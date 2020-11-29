@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".MyDonationsDonorFragment">
 
+        <TextView
+            android:id="@+id/tv_donor_no_donations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Donated items yet!"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:visibility="gone"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_set_my_donations"
             android:layout_width="match_parent"

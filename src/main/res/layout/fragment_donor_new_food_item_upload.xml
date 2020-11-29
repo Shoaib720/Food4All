@@ -112,7 +112,9 @@
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp" />
+                android:visibility="gone"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Food Item Image" />
 
             <Button
                 android:id="@+id/btn_frag_upload"

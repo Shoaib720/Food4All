@@ -86,9 +86,15 @@ public class AllDonationsBeneficiaryFragment extends Fragment {
                                             Donation donation = docs.toObject(Donation.class);
                                             mDonations.add(donation);
                                         }
-                                        loadingSpinner.stopLoadingSpinner();
-                                        mAdapter = new DonationAdapter(getContext(), mDonations);
-                                        rvAllDonations.setAdapter(mAdapter);
+                                        if(mDonations.isEmpty()){
+                                            loadingSpinner.stopLoadingSpinner();
+                                            tvShowNoDonations.setVisibility(View.VISIBLE);
+                                        }
+                                        else {
+                                            loadingSpinner.stopLoadingSpinner();
+                                            mAdapter = new DonationAdapter(getContext(), mDonations);
+                                            rvAllDonations.setAdapter(mAdapter);
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {

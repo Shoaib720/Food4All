@@ -199,7 +199,13 @@ public class NewFoodUploadDonorFragment extends Fragment {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadImage();
+                boolean result = validateInputs();
+                if (result) {
+                    uploadImage();
+                }
+                else {
+                    Toast.makeText(getContext(), "Please fill all fields!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -235,6 +241,10 @@ public class NewFoodUploadDonorFragment extends Fragment {
 
 
         return v;
+    }
+
+    private boolean validateInputs() {
+        return !etFoodName.getText().toString().equals("") && !etDescription.getText().toString().equals("") && !etExpiryDate.getText().toString().equals("") && !_selectedDistrict[0].isEmpty() && !etImageName.getText().toString().equals("");
     }
 
     private String getFileExtension(Uri uri){
@@ -389,6 +399,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
                     Bitmap bitmap;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), imageUri);
+                        ivFoodImage.setVisibility(View.VISIBLE);
                         ivFoodImage.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -401,6 +412,7 @@ public class NewFoodUploadDonorFragment extends Fragment {
             case CHOOSE_IMAGE_FROM_DEVICE_REQUEST:
                 if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
                     imageUri = data.getData();
+                    ivFoodImage.setVisibility(View.VISIBLE);
                     ivFoodImage.setImageURI(imageUri);
                 }
                 else {

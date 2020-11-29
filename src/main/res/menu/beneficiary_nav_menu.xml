@@ -18,11 +18,6 @@
         android:title="About App"/>
 
     <item
-        android:id="@+id/nav_settings_app"
-        android:icon="@drawable/ic_settings_24"
-        android:title="Settings"/>
-
-    <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/ic_sign_out"
         android:title="Sign out"/>

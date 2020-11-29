@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +29,7 @@ import java.util.List;
 public class MyDonationsDonorFragment extends Fragment {
 
     private RecyclerView rvMyDonations;
+    private TextView tvNoDonations;
     private DonationAdapter mAdapter;
 
     private String TAG = MyDonationsDonorFragment.class.getSimpleName();
@@ -55,6 +57,7 @@ public class MyDonationsDonorFragment extends Fragment {
         rvMyDonations = (RecyclerView) v.findViewById(R.id.recycler_set_my_donations);
         rvMyDonations.setHasFixedSize(true);
         rvMyDonations.setLayoutManager(new LinearLayoutManager(getContext()));
+        tvNoDonations = (TextView) v.findViewById(R.id.tv_donor_no_donations);
 
         mDonations = new ArrayList<>();
         final LoadingSpinner loadingSpinner = new LoadingSpinner(getActivity(), "Retrieving items...");
@@ -71,9 +74,15 @@ public class MyDonationsDonorFragment extends Fragment {
                                 Donation donation = docs.toObject(Donation.class);
                                 mDonations.add(donation);
                             }
-                            loadingSpinner.stopLoadingSpinner();
-                            mAdapter = new DonationAdapter(getContext(), mDonations);
-                            rvMyDonations.setAdapter(mAdapter);
+                            if(mDonations.isEmpty()){
+                                loadingSpinner.stopLoadingSpinner();
+                                tvNoDonations.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                loadingSpinner.stopLoadingSpinner();
+                                mAdapter = new DonationAdapter(getContext(), mDonations);
+                                rvMyDonations.setAdapter(mAdapter);
+                            }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
