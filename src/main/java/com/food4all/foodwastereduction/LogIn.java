@@ -59,20 +59,6 @@ public class LogIn extends AppCompatActivity {
         tvForgotPwd = (TextView) findViewById(R.id.tv_signin_forgot_password);
         btnLogin = (Button) findViewById(R.id.btn_signin);
 
-        // =========================================================Uncomment this===========================================
-
-
-
-
-
-//        btnResendEmail = (Button) findViewById(R.id.btn_resend_link);
-
-
-
-
-
-        // ==================================================================================================================
-
         // Adding underline to signin textview
         tvSignup.setPaintFlags(tvSignup.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvForgotPwd.setPaintFlags(tvForgotPwd.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -129,116 +115,6 @@ public class LogIn extends AppCompatActivity {
             }
         });
 
-        // ===========================================Uncomment this================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-        // This button on clicked will resend the verification email to the current user
-//        btnResendEmail.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                final FirebaseUser user = mAuth.getCurrentUser();
-//
-//                // If user not null then send the verification email
-//                // It simply means that the user is logged in
-//                if (user != null){
-//                    user.sendEmailVerification()
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//
-//                                    // Email sent successfully to the user
-//                                    // Toast the user about the same
-//                                    Toast.makeText(LogIn.this, "Validation link has been sent to your email!", Toast.LENGTH_LONG).show();
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//
-//                                    // Email wasn't sent to the user
-//                                    // Log the error
-//                                    Log.d("Error", "Email not sent: " + e.getMessage());
-//
-//                                    // Delete the user created by the Firebase
-//                                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<Void> task) {
-//
-//                                            // If user deleted successfully
-//                                            // Toast the user to retry signup
-//                                            if (task.isComplete()){
-//                                                Toast.makeText(LogIn.this, "Email not sent please retry signup!",
-//                                                        Toast.LENGTH_LONG).show();
-//
-//                                                // Transfer the flow to the Signup Activity
-//                                                Intent intent = new Intent(LogIn.this, SignUp.class);
-//                                                startActivity(intent);
-//                                            }
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//
-//                                            // If user deletion failed
-//                                            // Show the user alert dialog
-//                                            // that his/her email is not verified
-//                                            // resend the verification link
-//                                            AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
-//                                            builder.setTitle("Email issue!")
-//                                                    .setMessage("Dear user, your email is not verified! If you didn't received our mail, then please click on resend mail button!")
-//                                                    .setCancelable(false)
-//                                                    .setPositiveButton("Ok", null);
-//                                            AlertDialog dialog = builder.create();
-//                                            dialog.show();
-//                                        }
-//                                    });
-//                                }
-//                            });
-//                }else {
-//
-//                    // User is null
-//                    // It means an existing user / new user is attempting to resend mail
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(LogIn.this);
-//                    builder.setMessage("Hey there! You need to Signup first!")
-//                            .setCancelable(false)
-//                            .setPositiveButton("Signup", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialogInterface, int i) {
-//                                    Intent intent = new Intent(LogIn.this, SignUp.class);
-//                                    startActivity(intent);
-//                                }
-//                            }).setNegativeButton("Cancel", null);
-//                    AlertDialog dialog = builder.create();
-//                    dialog.show();
-//                }
-//
-//
-//            }
-//        });
-
-
-
-
-
-
-
-
-
-
-
-
-        // =============================================================================================================================
-
         // User clicked on login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -292,25 +168,13 @@ public class LogIn extends AppCompatActivity {
         tvSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // User clicked Signup Text View
-                // Transfer the flow to Signup Activity
-//                Intent intent = new Intent(LogIn.this, SignUp.class);
-//                startActivity(intent);
-
-                // ============================= Experimenting=========================================
                 // Transfering the control to Complete user profile
-
                 Intent intent = new Intent(LogIn.this, CompleteUserProfile.class);
                 startActivity(intent);
-
-                // ====================================================================================
             }
         });
 
     }
-
-    // =================================================Experiment===================================================
 
     private void loginOnlyIfEmailVerifiedAndUserDataExists(FirebaseUser user) {
 
@@ -380,66 +244,17 @@ public class LogIn extends AppCompatActivity {
         }else {
             Log.d(TAG, "User email is returned null!!!");
         }
-
-//        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-//        dbRef.orderByChild("email").equalTo(email)
-//        .addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                System.out.println(dataSnapshot);
-//                System.out.println(dataSnapshot.child(email));
-//                System.out.println(dataSnapshot.child(email).exists());
-//                if(dataSnapshot.child(email).exists()){
-//                    // Email is verified
-//                    // transfer the flow to Dashboard
-//                    Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
-//                    startActivity(loginIntent);
-//                }
-//                else {
-//                    Toast.makeText(LogIn.this, "Hello",
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//                for(DataSnapshot data: dataSnapshot.getChildren()){
-//                    if (data.child(email).exists()) {
-//                        //do ur stuff
-//                        Intent loginIntent = new Intent(LogIn.this, Dashboard.class);
-//                        startActivity(loginIntent);
-//                    } else {
-//                        //do something if not exists
-//                        Toast.makeText(LogIn.this, "Hello",
-//                            Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }
-
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Toast.makeText(LogIn.this, "Unable to login please try again",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
-    // ===========================================================================================================
 
     // This method updates the UI as per the user passed by the Login clicked method
     // User email verification has already been checked
     private void updateUI(FirebaseUser currentUser) {
 
         if (currentUser != null){
-            // ============================================Experiment======================================
             loginOnlyIfEmailVerifiedAndUserDataExists(currentUser);
-            // ============================================================================================
-
-            // =======================================Uncomment this section ==============================
-            // User is verified
-            // Transfer flow to dashboard
-//            Intent intent = new Intent(LogIn.this, Dashboard.class);
-//            startActivity(intent);
-            // ============================================================================================
         }
         else {
-
             // User is null
             // Clear the fields
             clearInputs();

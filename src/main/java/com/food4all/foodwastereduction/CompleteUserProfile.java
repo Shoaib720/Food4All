@@ -135,12 +135,6 @@ public class CompleteUserProfile extends AppCompatActivity {
                 String _dob = etDob.getText().toString();
                 String _gender = rbGenderSelected.getText().toString();
                 String _userType = rbUserTypeSelected.getText().toString();
-//                String _email = fUser.getEmail();
-//                String _emailParts[] = _email.split("@");
-//                String _emailSecondPart = _emailParts[1].split(".")[0];
-//                String child = _emailParts[0] + _emailSecondPart;
-
-                // =====================================Experiment===============================================
 
                 Boolean areInputsValid = checkInputValidity(_name, _contact, _about, _dob, _gender, _userType, _selectedDistrict[0]);
 
@@ -163,29 +157,6 @@ public class CompleteUserProfile extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-
-
-
-                // ==============================================================================================
-
-
-                // ====================================Uncomment=============================================
-//                UserHelper newUser = new UserHelper(_name, _contact, _email, _about, _dob, _gender);
-//                dbRef.child(child).setValue(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Intent intent = new Intent(CompleteUserProfile.this, Dashboard.class);
-//                        startActivity(intent);
-//                        clearInputs();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(CompleteUserProfile.this, "Unable to register. Please try again", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-
-                // ==================================================================================================
             }
         });
 

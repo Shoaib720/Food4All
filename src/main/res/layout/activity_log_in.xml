@@ -77,23 +77,5 @@
         android:clickable="true"
         />
 
-<!-- =====================Uncomment======================   -->
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_resend_link"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Resend verification email!"-->
-<!--        android:textSize="15sp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_marginRight="80dp"-->
-<!--        android:layout_marginLeft="80dp"-->
-<!--        android:background="@color/splashForeground"-->
-<!--        android:textColor="#ffffff"-->
-<!--        />-->
-
-<!-- ======================================================   -->
-
-
 
 </LinearLayout>

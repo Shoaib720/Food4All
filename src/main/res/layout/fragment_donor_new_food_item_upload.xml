@@ -53,17 +53,6 @@
                 android:inputType="date"
                 android:textSize="@dimen/fontSizeNormal" />
 
-            <!--            <EditText-->
-            <!--                android:id="@+id/et_frag_donor_email"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="20dp"-->
-            <!--                android:layout_marginTop="20dp"-->
-            <!--                android:layout_marginRight="20dp"-->
-            <!--                android:hint="Enter your email"-->
-            <!--                android:inputType="textEmailAddress"-->
-            <!--                android:textSize="@dimen/fontSizeNormal" />-->
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

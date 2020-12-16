@@ -38,16 +38,6 @@ public class MainActivity extends AppCompatActivity {
         slogan.setAnimation(bottomAnim);
 
 
-        // Transfering flow to Signup Activity
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent intent = new Intent(MainActivity.this, SignUp.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        }, SPLASH_SCREEN_DURATION);
-
         // Transfer flow to Login Activity
         new Handler().postDelayed(new Runnable() {
             @Override
